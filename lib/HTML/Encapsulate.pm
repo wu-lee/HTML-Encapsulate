@@ -94,19 +94,28 @@ my $DEFAULT_INSTANCE; # lazily assigned within download
 
 sub download
 {
-    my $self = blessed($_[0]) && $_[0]->isa(__PACKAGE__)?
-        shift :                                   # we're a method...
-        ($DEFAULT_INSTANCE ||= __PACKAGE__->new); # we're a function...
-    
+    my $self = shift;
+
     # An URI or HTTP::Request for the page we want
     my $request = shift;
 
-    # Where to save things. a directory - the main file will be called
+    # Where to save things. A directory - the main file will be called
     # 'index.html'
     my $content_dir = shift; 
 
-    # Get the user agent instance
-    my $ua = $self->{ua}; 
+    # A specialised UserAgent to use
+    my $ua = shift;
+
+    if (!blessed($self) 
+        || !$self->isa(__PACKAGE__))
+    { # we're a function, readjust the paramters accordingly
+        ($self, $request, $content_dir, $ua) 
+            = ( ($DEFAULT_INSTANCE ||= __PACKAGE__->new), $self, $request, $content_dir, shift);
+    }
+
+   
+    # If no user agent supplied, use the instance's
+    $ua ||= $self->{ua};
 
     croak "please supply an URL or HTTP::Request to download" 
         unless $request;
