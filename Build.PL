@@ -29,6 +29,7 @@ my $builder = Module::Build->new
      build_requires => 
      {
          'Module::Build' => 0.28,
+         'LWP::UserAgent::Snapshot' => 0,
      },
      requires => 
      {
