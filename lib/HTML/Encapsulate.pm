@@ -200,7 +200,9 @@ sub download
             # FIXME check for inline URL images? (i.e. data:// urls)
             my ($ext) = $url->path =~ m![.]([^./]+)$!;
             my $index = keys(%seen)+1;
-            my $filename = join ".", $index, $ext;
+            my $filename = $index;
+            $filename .= ".$ext" 
+                if defined $ext;
             my $file = File::Spec->catfile($content_dir, $filename); 
 
 
