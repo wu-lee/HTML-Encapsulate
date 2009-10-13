@@ -29,7 +29,7 @@ our %TIDY_OPTIONS = (lower_literals => 1,
 my $QUOTED_STR = qr/ " ([^"]*) " | ' ([^']*) ' /x;
 
 my $URL_RE = qr/ url \s* \( 
-                             \s* (?: $QUOTED_STR | (.*)? ) \s*
+                             \s* (?: $QUOTED_STR | (.*?) ) \s*
                          \) 
 /ix; 
 
