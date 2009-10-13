@@ -91,6 +91,7 @@ sub new
     return $self;
 }
 
+sub ua { @_>1 ? shift->{ua} = shift : shift->{ua} }
 
 my $DEFAULT_INSTANCE; # lazily assigned within download
 
