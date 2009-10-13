@@ -79,8 +79,10 @@ sub new
 
     unless (defined $options{ua}) 
     {
-        my $ua = LWP::UserAgent->new;
-        $ua->requests_redirectable([qw(GET POST HEAD)]);
+        # the default user agent should follow redirects
+        my $ua = LWP::UserAgent->new(
+            requests_redirectable => [qw(GET POST HEAD)]
+        );
         $options{ua} = $ua;
     }
 
