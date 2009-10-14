@@ -39,6 +39,7 @@ my $builder = Module::Build->new
       'HTML::TreeBuilder::XPath' => 0,
       'LWP' => 0,
       'HTML::Tidy' => 0,
+      'HTTP::Response::Encoding' => 0,
      },
      recommends => 
      {

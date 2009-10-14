@@ -50,8 +50,12 @@ sub _inner_html
 sub _slurp
 {
     my $path = shift;
+    my $encoding = defined $_[0]?
+        "encoding($_[0])" : "";
+
     local $/;
-    confess "failed to open file '$path': $!" unless open my $fh, "<", $path;
+    confess "failed to open file '$path': $!" 
+        unless open my $fh, "<$encoding", $path;
     my $content = <$fh>;
     close $fh;
     return $content;
@@ -167,7 +171,17 @@ sub download
         my $tidy = HTML::Tidy->new(\%TIDY_OPTIONS);
         $tidy->ignore( text => qr/./ );        
 
-        my $content = _slurp($file);
+        # Get the encoding, using the method suggested in HTTP::Response::Encoding's
+        # docs (that allows HTTP::Response to see the document's <meta> tags).
+        my $encoding = do
+        {
+            my $trunc_request = $request->clone;
+            $trunc_request->headers->header(Range => "bytes=0-4095"); # Just get 4k
+            my $trunc_response = $ua->request($trunc_request);
+            $trunc_response->encoding;
+        };
+          
+        my $content = _slurp($file, $encoding);
 
         {
             no warnings 'redefine';
