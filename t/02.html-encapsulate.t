@@ -27,10 +27,8 @@ mkpath $download_dir;
 
 my $ua = LWP::UserAgent::Snapshot->new;
 
-#my $full_ref_path = File::Spec->rel2abs($reference_dir);
 $ua->mock_from("$reference_dir/mock_data");
 
-#my $url = "file://$full_ref_path/88fc2536dcb9da1666de4e5507f4aae6-response-001.html";
 my $url = "http://nowhere/";
 
 my $request = HTTP::Request->new(GET => $url);
