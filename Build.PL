@@ -45,7 +45,7 @@ my $builder = Module::Build->new
      {
 #      'Test::Files' => 0.14,
      },
-     test_files         => [ rscan_dir('t') ],
+     test_files         => [ rscan_dir('t', '\.t$') ],
      add_to_cleanup      => [ 'HTML-Encapsulate-*' ],
     );
 
