@@ -435,7 +435,7 @@ This command isn't always convenient, nor available, so it's a fairly
 non-portable option.  This module aims to perform the same function in
 a portable, pure-perl fashion.
 
-See the documentation for the C<<->download>> method for more details.
+See the documentation for the C<< ->download >> method for more details.
 
 
 =head1 EXPORTABLE FUNCTIONS
@@ -445,7 +445,7 @@ See the documentation for the C<<->download>> method for more details.
 =head2 C<< download($url_or_request, $download_dir, $user_agent) >>
 
 Essentially constructs a default instance and delegates to its
-C<<->download>> method.  See the appropriate documentation for that
+C<< ->download >> method.  See the appropriate documentation for that
 method.
 
 Optionally, a LWP::UserAgent instance C<$user_agent> may be supplied
@@ -577,7 +577,7 @@ off the shelf which does the job equivalently, I'd have used that.
 Since I couldn't find anything suitable I whipped this up in a jiffy,
 and then warped it to support as much as I could.
 
-See the description of C<<->download>> for details of what is and
+See the description of C<< ->download >> for details of what is and
 isn't implemented.
 
 Please report any bugs or feature requests to
