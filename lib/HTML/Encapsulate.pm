@@ -2,9 +2,7 @@ package HTML::Encapsulate;
 use warnings;
 use strict;
 use Carp;
-
-use version; our $VERSION = qv('0.1');
-
+use PerlIO;
 use File::Path qw(mkpath);
 use File::Spec;
 use File::Spec::Unix;
@@ -16,6 +14,10 @@ use Scalar::Util qw(blessed);
 use URI;
 use HTML::Entities qw(decode_entities encode_entities);
 use HTML::Tidy;
+use HTTP::Response::Encoding;
+
+use version; our $VERSION = qv('0.1');
+
 
 our @EXPORT_OK = qw(download);
 
