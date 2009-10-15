@@ -18,6 +18,8 @@ requires:
 build_requires:
   LWP::UserAgent::Snapshot: 0
   Module::Build: 0.28
+recommends:
+  Encode::Detect: 0
 provides:
   HTML::Encapsulate:
     file: lib/HTML/Encapsulate.pm
