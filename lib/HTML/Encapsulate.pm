@@ -15,6 +15,8 @@ use URI;
 use HTML::Entities qw(decode_entities encode_entities);
 use HTML::Tidy;
 use HTTP::Response::Encoding;
+use HTML::HeadParser;
+use HTTP::Headers::Util;
 
 use version; our $VERSION = qv('0.1');
 
@@ -70,6 +72,76 @@ sub _spit
     confess "failed to open file '$path': $!" unless open my $fh, ">", $path;
     print $fh $content;
     close $fh;
+}
+
+# This parses the charset from a HTML doc's HEAD section, if present, 
+#
+# The code here is adapted from Tatsuhiko Miyagawa's here:
+# http://svn.bulknews.net/repos/public/HTTP-Response-Charset/trunk/lib/HTTP/Response/Charset.pm
+#
+# See also http://use.perl.org/~miyagawa/journal/31250
+# HTTP::Response::Charset seems not to be on CPAN, however.
+{
+
+    my $boms = [
+        'UTF-8'    => "\x{ef}\x{bb}\x{bf}",
+        'UTF-32BE' => "\x{0}\x{0}\x{fe}\x{ff}",
+        'UTF-32LE' => "\x{ff}\x{fe}\x{0}\x{0}",
+        'UTF-16BE' => "\x{fe}\x{ff}",
+        'UTF-16LE' => "\x{ff}\x{fe}",
+    ];
+
+
+    sub _detect_encoding
+    {
+        my $filename = shift;
+        
+        # 1) We assume the content has been identified as HTML, 
+        # and the Content-Type header already checked.
+
+        # Read in a max 4k chunk from the content;
+        my $chunk;
+        {
+            open my $fh, "<", $filename 
+                or Carp::confess "Failed to read file '$filename': $!";
+            read $fh, $chunk, 4096; # read up to 4k
+            close $fh;
+        }
+
+        # 2) Look for META head tags
+        {
+            my $head_parser = HTML::HeadParser->new;              
+            $head_parser->parse($chunk);            
+            $head_parser->eof;
+            
+            my $content_type = $head_parser->header('Content-Type');            
+            return unless $content_type;
+            my ($words) = HTTP::Headers::Util::split_header_words($content_type);
+            my %param = @$words;
+            return $param{charset};
+        }
+
+        # 3) If there's a UTF BOM set, look for it
+        my $count = 0;
+        while (my ($enc, $bom) = $boms->[$count++, $count++])
+        {
+            return $enc 
+                if $bom eq substr($chunk, 0, length $bom);
+        }
+    
+        # 4) If it looks like an XML document, look for XML declaration
+        if ($chunk =~ m!^<\?xml\s+version="1.0"\s+encoding="([\w\-]+)"\?>!) {
+            return $1;
+        }
+
+        # 5) If there's Encode::Detect module installed, try it
+        if ( eval { require Encode::Detect::Detector } ) {
+            my $charset = Encode::Detect::Detector::detect($chunk);
+            return $charset if $charset;
+        }
+        
+        return;
+    }
 }
 
 
@@ -165,6 +237,9 @@ sub download
     # This will parse the HTML so we can get the links
     my $parser = HTML::TreeBuilder::XPath->new;
 
+    # Get the encoding, if we can
+    my $encoding = $response->encoding || _detect_encoding($file);
+
     # HTML::Tidy does a better job of interpreting bad html than
     # HTML::TreeBuilder alone, so we pass it through that first.  If
     # we don't, the resulting HTML obtained after HTML::TreeBuilder
@@ -173,16 +248,7 @@ sub download
         my $tidy = HTML::Tidy->new(\%TIDY_OPTIONS);
         $tidy->ignore( text => qr/./ );        
 
-        # Get the encoding, using the method suggested in HTTP::Response::Encoding's
-        # docs (that allows HTTP::Response to see the document's <meta> tags).
-        my $encoding = do
-        {
-            my $trunc_request = $request->clone;
-            $trunc_request->headers->header(Range => "bytes=0-4095"); # Just get 4k
-            my $trunc_response = $ua->request($trunc_request);
-            $trunc_response->encoding;
-        };
-          
+
         my $content = _slurp($file, $encoding);
 
         {

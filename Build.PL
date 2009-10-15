@@ -44,6 +44,7 @@ my $builder = Module::Build->new
      recommends => 
      {
 #      'Test::Files' => 0.14,
+      'Encode::Detect' => 0, # as a final fallback to encoding detection
      },
      test_files         => [ rscan_dir('t', '\.t$') ],
      add_to_cleanup      => [ 'HTML-Encapsulate-*' ],
