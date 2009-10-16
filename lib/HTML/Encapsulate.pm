@@ -171,7 +171,7 @@ sub new
 
 sub ua { @_>1 ? shift->{ua} = shift : shift->{ua} }
 
-my $DEFAULT_INSTANCE; # lazily assigned within download
+our $DEFAULT_INSTANCE; # lazily assigned within download
 
 sub download
 {
@@ -510,30 +510,42 @@ See the documentation for the C<< ->download >> method for more details.
 
 =head2 C<< download($url_or_request, $download_dir, $user_agent) >>
 
-Essentially constructs a default instance and delegates to its
-C<< ->download >> method.  See the appropriate documentation for that
-method.
+Essentially constructs a default instance and delegates to its C<<
+->download >> method.  See the appropriate documentation for that
+method.  Note that, once created, this instance will be re-used by
+future calls to C<download>.
 
 Optionally, a LWP::UserAgent instance C<$user_agent> may be supplied
 for use, e.g. if the download needs to be performed as part of an
 ongoing session, or needs to have specific properties or behaviour.
-By default, a new LWP::UserAgent instance will be created.
 
-
+If no C<$user_agent> is supplied, a new LWP::UserAgent instance will be
+created by the default instance used. See the C<< ->new >> method for details.
 
 =head1 CLASS METHODS
 
 =head2 C<< $obj = $class->new(%options)  >>
 
-Constructs a new instance with tweaked properties.
+Constructs a new instance with tweaked properties. 
 
-FIXME elaborate.
-
-Options can be:
+Only one option is currently available:
 
 =over 4 
 
-=item
+=item C<ua>
+
+Supplies a C<LWP::UserAgent> instance to use instead of the default.
+If not supplied, a default new instance will be constructed like this:
+
+    $ua = LWP::UserAgent->new(
+        requests_redirectable => [qw(GET POST HEAD)]
+    );
+
+This means that redirects will be followed for C<GET>, C<HEAD>, and
+(unlike a default instance), C<POST>.
+
+One reason for using an externally supplied user agent might be to
+download within the context of a session it has created.
 
 =back
 
