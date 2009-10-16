@@ -57,21 +57,37 @@ EXPORTABLE FUNCTIONS
   "download($url_or_request, $download_dir, $user_agent)"
     Essentially constructs a default instance and delegates to its
     "->download" method. See the appropriate documentation for that method.
+    Note that, once created, this instance will be re-used by future calls
+    to "download".
 
     Optionally, a LWP::UserAgent instance $user_agent may be supplied for
     use, e.g. if the download needs to be performed as part of an ongoing
-    session, or needs to have specific properties or behaviour. By default,
-    a new LWP::UserAgent instance will be created.
+    session, or needs to have specific properties or behaviour.
+
+    If no $user_agent is supplied, a new LWP::UserAgent instance will be
+    created by the default instance used. See the "->new" method for
+    details.
 
 CLASS METHODS
   "$obj = $class->new(%options)"
     Constructs a new instance with tweaked properties.
 
-    FIXME elaborate.
+    Only one option is currently available:
 
-    Options can be:
+    "ua"
+        Supplies a "LWP::UserAgent" instance to use instead of the default.
+        If not supplied, a default new instance will be constructed like
+        this:
 
-    *
+            $ua = LWP::UserAgent->new(
+                requests_redirectable => [qw(GET POST HEAD)]
+            );
+
+        This means that redirects will be followed for "GET", "HEAD", and
+        (unlike a default instance), "POST".
+
+        One reason for using an externally supplied user agent might be to
+        download within the context of a session it has created.
 
 OBJECT METHODS
   "$obj->download($url_or_request, $download_dir)"

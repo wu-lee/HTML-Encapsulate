@@ -135,7 +135,7 @@ sub _spit
         }
 
         # 5) If there's Encode::Detect module installed, try it
-        if ( eval { require Encode::Detect::Detector } ) {
+        if ( eval "use Encode::Detect::Detector" ) {
             my $charset = Encode::Detect::Detector::detect($chunk);
             return $charset if $charset;
         }

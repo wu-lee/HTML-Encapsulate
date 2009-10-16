@@ -40,11 +40,16 @@ my $builder = Module::Build->new
       'LWP' => 0,
       'HTML::Tidy' => 0,
       'HTTP::Response::Encoding' => 0,
+      'HTML::Entities' => 0,
+      'HTML::HeadParser' => 0,
+      'URI' => 0, 
      },
+     # Encode::Detect recommended as a final fallback to encoding detection
      recommends => 
      {
-#      'Test::Files' => 0.14,
-      'Encode::Detect' => 0, # as a final fallback to encoding detection
+      'Test::Files' => 0.14,
+      'Encode::Detect' => 0,
+      'Encode::Detect::Detector' => 0,
      },
      test_files         => [ rscan_dir('t', '\.t$') ],
      add_to_cleanup      => [ 'HTML-Encapsulate-*' ],
