@@ -1,6 +1,6 @@
 ---
 name: HTML-Encapsulate
-version: v0.1
+version: v0.2
 author:
   - 'Nick Woolley <npw@cpan.org>'
 abstract: rewrites an HTML page as a self-contained set of files
@@ -28,7 +28,7 @@ recommends:
 provides:
   HTML::Encapsulate:
     file: lib/HTML/Encapsulate.pm
-    version: v0.1
+    version: v0.2
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

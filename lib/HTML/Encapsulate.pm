@@ -18,7 +18,7 @@ use HTTP::Response::Encoding;
 use HTML::HeadParser;
 use HTTP::Headers::Util;
 
-use version; our $VERSION = qv('0.1');
+use version; our $VERSION = qv('0.2');
 
 
 our @EXPORT_OK = qw(download);
