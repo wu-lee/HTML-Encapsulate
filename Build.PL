@@ -3,7 +3,7 @@ use warnings;
 use Module::Build;
 
 { # define a handy rscan_dir function
-    my $manifest_skip = qr/(*FAIL)/;
+    my $manifest_skip = qr/(?!)/; # this regex always fails 
     if (open my $fh, '<', 'MANIFEST.SKIP')
     {
         # map /.*/ chomps newlines, since . doesn't match EOLs
