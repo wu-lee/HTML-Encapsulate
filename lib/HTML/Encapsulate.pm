@@ -7,7 +7,7 @@ use File::Path qw(mkpath);
 use File::Spec;
 use File::Spec::Unix;
 use Carp qw(croak carp cluck confess);
-use Exporter qw(import);
+use Exporter;
 use LWP::UserAgent;
 use HTML::TreeBuilder::XPath;
 use Scalar::Util qw(blessed);
@@ -18,10 +18,15 @@ use HTTP::Response::Encoding;
 use HTML::HeadParser;
 use HTTP::Headers::Util;
 
-use version; our $VERSION = qv('0.2');
+use version; our $VERSION = qv('0.3');
 
 
 our @EXPORT_OK = qw(download);
+
+# We don't want to inherit Exporter, we can't always import the import
+# method, so this is a workaround.
+sub import { goto &Exporter::import }
+
 
 our %TIDY_OPTIONS = (lower_literals => 1,
                      show_errors => 0,
