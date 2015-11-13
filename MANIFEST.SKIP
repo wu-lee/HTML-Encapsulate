@@ -18,3 +18,5 @@ CVS
 ^pod2htmi.tmp$
 ^tmp
 ^nytprof
+^MYMETA\.yml$
+^MYMETA\.json$

@@ -13,3 +13,5 @@
 Makefile.PL
 HTML-Encapsulate-*
 tmp*
+/MYMETA.json
+/MYMETA.yml
