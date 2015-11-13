@@ -7,8 +7,8 @@ VERSION
 
 SYNOPSIS
         use HTML::Encapsulate qw(download);
-        
-    # This will download the page at the URL given in the first
+    
+        # This will download the page at the URL given in the first
         # argument into a folder named in the second, here called
         # C<bar.html>.  The folder will contain all the images and other
         # components required to view the page.  The page itself will be
